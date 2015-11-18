@@ -10,11 +10,6 @@ logisticCost <- function(theta,X,y)
   diff <- param1 - param2
   m <- length(y)
   j <- 1/m * (sum(diff))
-#   S <- t(h) - y
-#   Z <- as.matrix(S) %*% X
-#   grad <- 1/m * Z
-#   
-  # list(cost = j, grad=grad)
   j
 }
 
@@ -29,7 +24,14 @@ logisticGradient <- function(theta,X,y)
   as.numeric(grad)
 }
 
-
+predict <- function(theta, X)
+{
+  z = X %*% theta
+  g = sigmod(z)
+  g[g > 0.5] = 1
+  g[g <= 0.5] = 0
+  as.numeric(g)
+}
 
 exec_logistic <- function()
 {
@@ -48,11 +50,12 @@ exec_logistic <- function()
   X <- cbind(1,X)
   Y <- csvData[,colLentgth]
   initial_theta <- c(rep(0,dim(X)[2]))
-#   cost <- logisticCost(initial_theta,X,Y)
-#   grad <- logisticGradient(initial_theta,X,Y)
-#   print(cost)
-#   print(grad)
-#   cost <- logisticCost(grad,X,Y)
-#   print(cost)
-  optim(initial_theta,logisticCost,logisticGradient,X=X,y=Y)
+  optimal <- optim(initial_theta,logisticCost,logisticGradient,X=X,y=Y)
+  par <- optimal$par
+  #Calculate the probability with Score 45 in Exam1 and 85 in Exam 2
+  prob <- sigmod(c(1,45,85) %*% par)
+  print(prob)
+  #Let's predict the training accuracy
+  predictedResult <- predict(par,X)
+  mean(predictedResult == as.numeric(Y)) * 100
 }
