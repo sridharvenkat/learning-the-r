@@ -17,6 +17,15 @@ logisticRegCost <- function(theta,X,y, lambda)
   costReg
 }
 
+logisticRegGradient <- function(theta,X,y, lambda)
+{
+  m <- length(y)
+  grad <- logisticGradient(theta,X,y);
+  gradReg <- grad + (lambda/m)*theta;
+  gradReg[1] <- grad[1]
+  gradReg 
+}
+
 exec_logistic_reg <- function()
 {
   csvData <- read.csv("ex2data2.csv",header = F)
@@ -30,7 +39,16 @@ exec_logistic_reg <- function()
   Y <- csvData[,colLentgth]
   initial_theta <- c(rep(0,dim(X)[2]))
   lambda <- 1
-  costReg <- logisticRegCost(initial_theta,X,Y,lambda)
-  
-  costReg
+#   costReg <- logisticRegCost(initial_theta,X,Y,lambda)
+#   gradReg <- logisticRegGradient(initial_theta,X,Y,lambda)
+#   print(gradReg)
+#   print(costReg)
+  optimal <- optim(initial_theta,logisticRegCost,logisticRegGradient,X=X,y=Y, lambda = lambda, method = "BFGS")
+  par <- optimal$par
+  #Calculate the probability with Score 45 in Exam1 and 85 in Exam 2
+#   prob <- sigmod(c(1,45,85) %*% par)
+#   print(prob)
+  #Let's predict the training accuracy
+  predictedResult <- predict(par,X)
+  mean(predictedResult == as.numeric(Y)) * 100
 }

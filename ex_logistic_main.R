@@ -2,6 +2,7 @@ source("common.r")
 
 logisticCost <- function(theta,X,y)
 {
+  
   z <- X %*% theta
   h <- sigmod(z)
   logh <- log(h)
@@ -50,9 +51,10 @@ exec_logistic <- function()
   X <- cbind(1,X)
   Y <- csvData[,colLentgth]
   initial_theta <- c(rep(0,dim(X)[2]))
-  optimal <- optim(initial_theta,logisticCost,logisticGradient,X=X,y=Y)
+  optimal <- optim(initial_theta,logisticCost,gr= logisticGradient,X=X,y=Y,method = "BFGS")
   par <- optimal$par
   #Calculate the probability with Score 45 in Exam1 and 85 in Exam 2
+  print(optimal)
   prob <- sigmod(c(1,45,85) %*% par)
   print(prob)
   #Let's predict the training accuracy
