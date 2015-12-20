@@ -20,3 +20,27 @@ exec_logistic_nn <- function()
   predictedResult <- apply(prediction,1,which.max)
   mean(predictedResult == Y) * 100
 }
+
+predict_feedForwardPropogation <- function(X, Y, Theta1, Theta2)
+{
+  z1 <- X %*% t(Theta1)
+  a1 <- sigmod(z1)
+  a1 <- cbind(1,a1)
+  z2 <- a1 %*% t(Theta2)
+  h <- sigmod(z2)
+  h
+}
+
+exec_nn_feedForwardPropogation <- function()
+{
+  X <- as.matrix(read.csv(".\\data\\ex_logistic_nn_x.csv", header = F))
+  Y <- read.csv(".\\data\\ex_logistic_nn_y.csv", header = F)
+  theta1 <- as.matrix(read.csv(".\\data\\theta1_data.csv", header = F))
+  theta2 <- as.matrix(read.csv(".\\data\\theta2_data.csv", header = F))
+  X <- cbind(1,X)
+  
+  prediction <- predict_feedForwardPropogation(X,Y,theta1,theta2) 
+  predictedResult <- apply(prediction,1,which.max)
+  mean(predictedResult == Y) * 100
+}
+
